@@ -1,0 +1,54 @@
+@startuml UseCase
+left to right direction
+
+rectangle "Пользователи" {
+    actor "Библиотекарь" as Librarian
+    actor "Читатель" as Reader
+}
+
+rectangle "Команды" {
+    usecase "Удаление читателя" as del_reader
+    usecase "Добавление читателя" as add_reader
+    usecase "Выдача книги"as give_book
+    usecase "Прием книги"as take_book
+    usecase "Добавление книги"as add_book
+    usecase "Удаление книги"as del_book
+    usecase "Поиск книги"as search_book
+    usecase "Запрос кники" as request_book
+    usecase "Возврат книги" as return_book
+}
+rectangle "Ввод информации" {
+    usecase "Указать имя" as p_name_reader
+    usecase "Указать получателя, название книги и срок возврата" as p_name_reader_name_book_time
+    usecase "Указать возвращающего и название книги" as p_name_reader_name_book
+    usecase "Указать название, автора, жанр и год выпуска" as p_name_b_a_g_y
+    usecase "Указать название" as p_name_book
+}
+
+
+(Команды) -- (Ввод информации)
+
+Librarian --> del_reader
+Librarian --> add_reader
+Librarian --> give_book
+Librarian --> take_book
+Librarian --> add_book
+Librarian --> del_book
+Librarian --> search_book
+
+Reader --> search_book
+Reader --> request_book
+Reader --> return_book
+
+del_reader .> p_name_reader : include
+add_reader .> p_name_reader : include
+give_book .> p_name_reader_name_book_time : include
+take_book .> p_name_reader_name_book : include
+add_book .> p_name_b_a_g_y : include
+del_book .> p_name_book : include
+search_book .> p_name_book : include
+
+request_book .> p_name_book : include
+return_book .> p_name_book : include
+
+@enduml

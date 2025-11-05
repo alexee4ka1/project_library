@@ -1,0 +1,302 @@
+import sqlite3
+import os
+
+def showBooks():
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT rowid, * FROM books""")
+    items = c.fetchmany(10)
+    for i in range(len(items)):
+        print(*items[i])
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input() 
+    
+
+def createBook():
+    print("Введите название: ")
+    title = str(input())
+    print("Введите автора: ")
+    author = str(input())
+    print("Введите год выпуска: ")
+    year = int(input())
+    print("Введите жанр: ")
+    genre = str(input())
+    print("Введите количество: ")
+    number = int(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""INSERT INTO books VALUES ('{title}','{author}',{year},'{genre}',{number})""")
+    db.commit()
+    db.close()
+
+def readBook():
+    print("Введите название: ")
+    title = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM books WHERE title='{title}'""")
+    items = c.fetchone()
+    try:
+        print(f"Название: {items[0]}\nАвтор: {items[1]}\nГод выпуска: {items[2]}\nЖанр: {items[3]}\nКоличество: {items[4]}")
+    except: print("Совпадений нет")
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def editBook():
+    print("Введите название: ")
+    title = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM books WHERE title='{title}'""")
+    items = c.fetchone()
+    print("Что изменить?")
+    print(f"0. Название: {items[0]}")
+    print(f"1. Автор: {items[1]}")
+    print(f"2. Год выпуска: {items[2]}")
+    print(f"3. Жанр: {items[3]}")
+    print(f"4. Количество: {items[4]}")
+    action = int(input())
+    if action == 0:
+        print("Введите название: ")
+        a = str(input())
+        c.execute(f"UPDATE books SET title = '{a}' WHERE title='{title}'")
+    elif action == 1:
+        print("Введите автора: ")
+        a = str(input())
+        c.execute(f"UPDATE books SET author = '{a}' WHERE title='{title}'")
+    elif action == 2:
+        print("Введите год: ")
+        a = int(input())
+        c.execute(f"UPDATE books SET year = {a} WHERE title='{title}'")
+    elif action == 3:
+        print("Введите жанр: ")
+        a = str(input())
+        c.execute(f"UPDATE books SET genre = '{a}' WHERE title='{title}'")
+    elif action == 4:
+        print("Введите количество: ")
+        a = input()
+        c.execute(f"UPDATE books SET number = {a} WHERE title='{title}'")
+    db.commit()
+    db.close()
+
+def deleteBook():
+    print("Введите название: ")
+    title = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM books WHERE title='{title}'""")
+    items = c.fetchone()
+    if items:
+        c.execute(f"""DELETE FROM books WHERE title='{title}'""")
+        
+        print("Книга удалена")
+    else: print("Книга не найдена")
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def showReaders():
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT rowid, * FROM readers""")
+    items = c.fetchmany(10)
+    for i in range(len(items)):
+        print(*items[i])
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def readReader():
+    print("Введите имя: ")
+    name = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM readers WHERE name='{name}'""")
+    items = c.fetchone()
+    try:
+        print(f"Имя: {items[0]}\Дата рождения: {items[1]}\n\Номер телефона: {items[2]}")
+    except: print("Совпадений нет")
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def createReader():
+    print("Введите имя: ")
+    name = str(input())
+    print("Введите номер телефона: ")
+    phoneNumber = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""INSERT INTO readers VALUES ('{name}','{phoneNumber}')""")
+    db.commit()
+    db.close()
+
+def editReader():
+    print("Введите имя: ")
+    name = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM readers WHERE name='{name}'""")
+    items = c.fetchone()
+    print("Что изменить?")
+    print(f"0. Имя: {items[0]}")
+    print(f"1. Номер телефона: {items[1]}")
+    action = int(input())
+    if action == 0:
+        print("Введите название: ")
+        a = str(input())
+        c.execute(f"UPDATE readers SET name = '{a}' WHERE name='{name}'")
+    if action == 1:
+        print("Введите номер телефона: ")
+        a = str(input())
+        c.execute(f"UPDATE readers SET phoneNumber = '{a}' WHERE name='{name}'")
+    print("Нажмите Enter для выхода")
+    input()
+
+def deleteReader():
+    print("Введите имя: ")
+    name = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT * FROM readers WHERE name='{name}'""")
+    items = c.fetchone()
+    if items:
+        c.execute(f"""DELETE FROM readers WHERE name='{name}'""")
+        print("Читатель удален")
+    else: print("Читатель не найден")
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def showLoans():
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT rowid, * FROM loans""")
+    items = c.fetchmany(10)
+    for i in range(len(items)):
+        print(*items[i])
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input() 
+
+def createLoan():
+    print("Введите имя")
+    name = str(input())
+    print("Введите название")
+    title = str(input())
+    print("Введите дату выдачи")
+    date0 = str(input())
+    print("Введите дату возврата")
+    date1 = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""INSERT INTO loans VALUES ('{name}', '{title}', '{date0}', '{date1}', '0', 0)""")
+    c.execute(f"""SELECT number FROM books WHERE title='{title}'""")
+    items = c.fetchone()
+    c.execute(f"UPDATE books SET number = '{items[0]-1}' WHERE title='{title}'")
+    db.commit()
+    db.close()
+
+def showPersonLoans():
+    print("Введите имя")
+    name = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT rowid, * FROM loans WHERE name='{name}'""")
+    items = c.fetchall()
+    for i in range(len(items)):
+        print(*items[i])
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def showPersonalLoans(name):
+    print("Ваши выдачи:")
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"""SELECT rowid, * FROM loans WHERE name='{name}'""")
+    items = c.fetchall()
+    for i in range(len(items)):
+        print(*items[i])
+    db.commit()
+    db.close()
+    print("Нажмите Enter для выхода")
+    input()
+
+def editLoan():
+    print("Введите имя: ")
+    name = str(input())
+    print("Введите номер выдачи: ")
+    num = int(input())
+    print("Введите дату возврата: ")
+    date2 = str(input())
+    db = sqlite3.connect('src/main/resources/database.db')
+    c = db.cursor()
+    c.execute(f"UPDATE loans SET date2 = '{date2}', status = 1 WHERE name='{name}' AND rowid={num}")
+    db.commit()
+    db.close()
+
+def menuLibrarian():
+    while 1:
+        os.system('clear')
+        print("МЕНЮ БИБЛИОТЕКАРЯ")
+        print("Выберите действие:")
+        print("0. Показать список книг")
+        print("1. Найти книгу")
+        print("2. Создать книгу")
+        print("3. Редактировать книгу")
+        print("4. Удалить книгу")
+        print("5. Показать список читателей")
+        print("6. Найти читателя")
+        print("7. Создать читателя")
+        print("8. Редактировать читателя")
+        print("9. Удалить читателя")
+        print("10. Показать список выдач")
+        print("11. Показать список выдач по имени")
+        print("12. Создать выдачу")
+        print("13. Обновить выдачу")
+        print("14. Выход")
+        action = int(input())
+        if action==0: showBooks()
+        elif action==1: readBook()
+        elif action==2: createBook()
+        elif action==3: editBook()
+        elif action==4: deleteBook()
+        elif action==5: showReaders()
+        elif action==6: readReader()
+        elif action==7: createReader()
+        elif action==8: editReader()
+        elif action==9: deleteReader()
+        elif action==10: showLoans()
+        elif action==11: showPersonLoans()
+        elif action==12: createLoan()
+        elif action==13: editLoan()
+        elif action==14: break
+
+def menuReader():
+    print("Введите ваше имя:")
+    name = str(input())
+    while 1:
+        os.system('clear')
+        print("МЕНЮ ЧИТАТЕЛЯ")
+        print("Выберите действие:")
+        print("0. Показать список книг")
+        print("1. Найти книгу")
+        print("2. Показать список своих выдач")
+        print("3. Выход")
+        action = int(input())
+        if action==0: showBooks()
+        elif action==1: readBook()
+        elif action==2: showPersonalLoans(name)
+        elif action==3: break
+        

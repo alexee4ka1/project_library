@@ -28,3 +28,4 @@
 - **Архитектура:** клиент-серверная
 
 ## ER-Диаграмма
+![Image alt](https://github.com/alexee4ka1/project_library/blob/main/docs/diagrams/ER_Diagram.png)

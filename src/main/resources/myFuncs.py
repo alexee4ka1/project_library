@@ -380,7 +380,7 @@ def menuLibrarian():
         elif action == 14: editLoan()
         elif action == 15: generatePersonLoansFiles()
         elif action == 16: break
-
+        
 
 def menuReader():
     name = input("Введите ваше имя: ")
